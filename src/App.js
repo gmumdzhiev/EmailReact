@@ -1,21 +1,40 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+import { connect } from 'react-redux';
 import './App.css';
-
+import { removeEmail } from './store/email.js'
+import AddEmailForm from './addEmailForm.js'
 class App extends Component {
+  constructor() {
+    super()
+    this.state = { email: "" }
+  }
   render() {
+    const {
+      emails,
+      dispatch,
+      state,
+    } = this.props;
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+      <div>
+        <AddEmailForm />
+        <ol>
+          {emails.map(email => (
+            <li key={email}>
+              {email}
+              <button onClick={() => dispatch(removeEmail(email))}>
+                remove
+            </button>
+            </li>
+          ))}
+        </ol>
+        <hr />
+        <pre>{JSON.stringify(state, null, 2)}</pre>
       </div>
     );
   }
 }
-
-export default App;
+const mapStateToProps = (state) => ({
+  emails: state.email.emails,
+  state: state,
+})
+export default connect(mapStateToProps)(App);
